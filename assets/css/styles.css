@@ -1,0 +1,190 @@
+/* Estilos inspirados en la identidad institucional de la Fiscalía General de la Nación */
+:root {
+    --fgn-azul-oscuro: #002D57;
+    --fgn-azul-medio: #0056b3;
+    --fgn-dorado: #C5A059;
+    --fgn-gris-fondo: #f0f2f5;
+    --fgn-blanco: #ffffff;
+    --fgn-borde: #d1d9e6;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: var(--fgn-gris-fondo);
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 650px;
+    margin: 40px auto;
+    background: var(--fgn-blanco);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-top: 8px solid var(--fgn-azul-oscuro);
+}
+
+h2 {
+    color: var(--fgn-azul-oscuro);
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--fgn-dorado);
+    padding-bottom: 10px;
+}
+
+label {
+    display: block;
+    margin-top: 20px;
+    font-weight: 600;
+    color: var(--fgn-azul-oscuro);
+    font-size: 0.9rem;
+}
+
+select, input[type="text"], input[type="number"], input[type="date"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid var(--fgn-borde);
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+}
+
+/* Mostrar texto en mayúsculas en inputs y textareas */
+select, input[type="text"], input[type="number"], input[type="date"], input[type="email"], textarea {
+    text-transform: uppercase;
+}
+
+select:focus, input:focus {
+    outline: none;
+    border-color: var(--fgn-azul-medio);
+    box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+    background-color: #fff;
+}
+
+button {
+    width: 100%;
+    margin-top: 35px;
+    padding: 14px;
+    background: var(--fgn-azul-oscuro);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background: #004080;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+#indiciado_container, #victimas_container {
+    margin-top: 10px;
+    padding-left: 15px;
+    border-left: 3px solid var(--fgn-dorado);
+}
+
+/* Animación suave para la aparición de contenedores dinámicos */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#indiciado_container > div, #victimas_container > div {
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* progress bar y contador de preguntas */
+.progress-container {
+    width: 100%;
+    background: var(--fgn-borde);
+    height: 8px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: var(--fgn-azul-medio);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.question-counter {
+    text-align: right;
+    font-size: 0.85rem;
+    color: var(--fgn-azul-oscuro);
+    margin-bottom: 20px;
+}
+
+/* steps hidden until activated */
+.step { display: none; }
+
+/* navegación: botones en la misma fila */
+.navigation{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    margin-top:18px;
+}
+.navigation button{
+    width:48%;
+    padding:10px 14px;
+    font-size:0.95rem;
+}
+
+/* general note styling for instructions */
+.note {
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 8px;
+    font-style: italic;
+}
+
+/* estilo para menu de opciones (foto/menu2) */
+.menu2-buttons{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.menu2-buttons button{background:var(--fgn-azul-medio);color:#fff;padding:12px;border-radius:6px;border:none;cursor:pointer}
+.menu2-buttons button.done{background:#4CAF50; /* green for completed */}
+.menu2-buttons button:disabled{background:#ccc;color:#666;cursor:not-allowed;}
+
+/* ensure the menu step is hidden by default; JS will add a class to body when it should appear */
+.step[data-step="999"] { display: none !important; }
+body.show-menu .step[data-step="999"] { display: block !important; }
+
+/* smaller buttons for action subforms */
+.back-to-menu{background:#6aa0d6}
+
+.patru-block, .capturado-block, .hijo-block {
+    border: 1px solid var(--fgn-borde);
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 6px;
+    background: #fafafa;
+}
+
+/* estilo para alertas */
+.alert {
+    padding: 12px 20px;
+    margin-top: 15px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background-color: #f8d7da;
+    color: #721c24;
+    text-align: center;
+    font-weight: bold;
+}

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Sistema URI</title>
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Seleccione el Delito</h2>
+
+    <select id="delito_select">
+        <option value="">Seleccione</option>
+        <option value="violencia_intrafamiliar">VIOLENCIA INTRAFAMILIAR ART. 229 C.P.</option>
+        <option value="homicidio">HOMICIDIO ART. 103 C.P.</option>
+        <option value="hurto">HURTO ART. 239 C.P.</option>
+        <option value="lesiones">LESIONES ART. 111 C.P.</option>
+        <option value="estupefacientes">TRÁFICO, FABRICACIÓN O PORTE DE ESTUPEFACIENTES ART. 376 C.P.</option>
+        <option value="armas">FABRICACIÓN, TRÁFICO, PORTE O TENENCIA DE ARMAS DE FUEGO, ACCESORIOS, PARTES O MUNICIONES ART. 365 C.P.</option>
+        <option value="delitos_sexuales">ACTOS SEXUALES CON MENOR DE CATORCE AÑOS ART. 209 C.P.</option>
+    </select>
+</div>
+
+<script>
+document.getElementById("delito_select").addEventListener("change", function(){
+    if(this.value !== ""){
+        window.location.href = "delitos/" + this.value + "/form.php";
+    }
+});
+</script>
+
+</body>
+</html>
