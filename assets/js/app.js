@@ -97,6 +97,9 @@ function getVisibleSteps() {
                 }
                 return true;
             }
+            if (window.openAction === 'relato_victima' && s.dataset.action === 'relato_victima') {
+                return true;
+            }
             // ignorar los demás tipos
             return false;
         });
@@ -833,6 +836,9 @@ document.addEventListener('click', function(e) {
                 idx = steps.findIndex(s => s.dataset.type === 'menores');
             } else if (window.openAction === 'datos_testigos') {
                 idx = steps.findIndex(s => s.dataset.type === 'testigos');
+            } else if (window.openAction === 'relato_victima') {
+                // explicitly find relato_victima steps
+                idx = steps.findIndex(s => s.dataset.action === 'relato_victima');
             } else if (window.openAction === 'actuaciones_pj') {
                 // if there are specific PJ action steps, prefer them
                 idx = steps.findIndex(s => s.dataset.action === 'actuaciones_pj' || s.dataset.type === 'pj');
@@ -986,6 +992,341 @@ function generatePDF() {
     }
     doc.save('datos.pdf');
 }
+
+// ===== RELATO VÍCTIMA: Lógica de preguntas condicionales =====
+
+// Auto-grow textareas
+function setupAutoGrowTextareas() {
+    const autoGrowAreas = document.querySelectorAll('textarea.auto-grow');
+    autoGrowAreas.forEach(textarea => {
+        const resizeTextarea = () => {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        };
+        textarea.addEventListener('input', resizeTextarea);
+        // adjust on page load
+        resizeTextarea();
+    });
+}
+setupAutoGrowTextareas();
+
+// Relato: Ha denunciado previamente?
+const relatoDenunciado = document.getElementById('relato_ha_denunciado');
+if (relatoDenunciado) {
+    relatoDenunciado.addEventListener('change', function() {
+        const container = document.getElementById('relato_denuncias_previas');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Tiene hijos?
+const relatoHijos = document.getElementById('relato_tiene_hijos');
+if (relatoHijos) {
+    relatoHijos.addEventListener('change', function() {
+        const container = document.getElementById('relato_hijos_container');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Cantidad de hijos - generar campos dinámicos
+const relatoCantHijos = document.getElementById('relato_cantidad_hijos');
+if (relatoCantHijos) {
+    relatoCantHijos.addEventListener('change', function() {
+        const num = parseInt(this.value) || 0;
+        const detailContainer = document.getElementById('relato_hijos_detalle');
+        detailContainer.innerHTML = '';
+        for (let i = 1; i <= num; i++) {
+            detailContainer.innerHTML += `
+                <div style="border:1px solid #ccc; padding:10px; margin-top:10px; border-radius:6px; background:#fafafa;">
+                    <label>Hijo(a) ${i} - Nombre</label>
+                    <input type="text" name="relato_hijo_${i}_nombre">
+                    <label>Edad</label>
+                    <input type="number" name="relato_hijo_${i}_edad" min="0">
+                </div>
+            `;
+        }
+    });
+}
+
+// Relato: Tipo de maltrato - mostrar "otro" cuando se selecciona el checkbox OTRO
+const relatoMaltratosCheckboxes = document.querySelectorAll('input[name="relato_tipo_maltrato"]');
+if (relatoMaltratosCheckboxes.length > 0) {
+    relatoMaltratosCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            // Verificar si está marcado el checkbox de OTRO
+            const otroMarcado = Array.from(relatoMaltratosCheckboxes).some(cb => cb.value === 'OTRO' && cb.checked);
+            const otroDiv = document.getElementById('relato_maltrato_otro');
+            if (otroMarcado) {
+                otroDiv.style.display = 'block';
+            } else {
+                otroDiv.style.display = 'none';
+            }
+        });
+    });
+}
+
+// Relato: Tipo de arma - mostrar detalles
+const relatoArma = document.getElementById('relato_tipo_arma');
+if (relatoArma) {
+    relatoArma.addEventListener('change', function() {
+        const detallesDiv = document.getElementById('relato_arma_detalles');
+        if (this.value !== '' && this.value !== 'sin_arma') {
+            detallesDiv.style.display = 'block';
+        } else {
+            detallesDiv.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Atención recibida?
+const relatoAtencion = document.getElementById('relato_atencion_recibida');
+if (relatoAtencion) {
+    relatoAtencion.addEventListener('change', function() {
+        const container = document.getElementById('relato_atencion_detalles');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Incapacidad o dictamen?
+const relatoIncapacidad = document.getElementById('relato_incapacidad');
+if (relatoIncapacidad) {
+    relatoIncapacidad.addEventListener('change', function() {
+        const container = document.getElementById('relato_incapacidad_detalles');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Maltrato anterior?
+const relatoMaltratoAnterior = document.getElementById('relato_maltrato_anterior');
+if (relatoMaltratoAnterior) {
+    relatoMaltratoAnterior.addEventListener('change', function() {
+        const container = document.getElementById('relato_maltrato_anterior_detalles');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Conductas psicológicas?
+const relatoConducatasPsico = document.querySelectorAll('select[name="relato_conductas_psicologicas"]');
+if (relatoConducatasPsico.length > 0) {
+    relatoConducatasPsico[0].addEventListener('change', function() {
+        const container = document.getElementById('relato_conductas_psico_detalles');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Discapacidad?
+const relatoDiscapacidad = document.getElementById('relato_discapacidad');
+if (relatoDiscapacidad) {
+    relatoDiscapacidad.addEventListener('change', function() {
+        const container = document.getElementById('relato_discapacidad_detalles');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Consume sustancias?
+const relatoSustancias = document.getElementById('relato_consume_sustancias');
+if (relatoSustancias) {
+    relatoSustancias.addEventListener('change', function() {
+        const container = document.getElementById('relato_sustancias_detalles');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Rehabilitación?
+const relatoRehabilitacion = document.querySelectorAll('select[name="relato_rehabilitacion"]');
+if (relatoRehabilitacion.length > 0) {
+    relatoRehabilitacion[0].addEventListener('change', function() {
+        const container = document.getElementById('relato_rehabilitacion_detalles');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Enfermedad mental?
+const relatoEnfermedad = document.getElementById('relato_enfermedad_mental');
+if (relatoEnfermedad) {
+    relatoEnfermedad.addEventListener('change', function() {
+        const container = document.getElementById('relato_enfermedad_detalles');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Hay testigos?
+const relatoTestigos = document.querySelectorAll('select[name="relato_hay_testigos"]');
+if (relatoTestigos.length > 0) {
+    relatoTestigos[0].addEventListener('change', function() {
+        const container = document.getElementById('relato_testigos_detalles');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Tiene evidencias?
+const relatoEvidencias = document.querySelectorAll('select[name="relato_tiene_evidencias"]');
+if (relatoEvidencias.length > 0) {
+    relatoEvidencias[0].addEventListener('change', function() {
+        const container = document.getElementById('relato_evidencias_detalles');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Algo más que agregar?
+const relatoAlgoMas = document.getElementById('relato_algo_mas');
+if (relatoAlgoMas) {
+    relatoAlgoMas.addEventListener('change', function() {
+        const container = document.getElementById('relato_final_container');
+        if (this.value === 'si') {
+            container.style.display = 'block';
+            // re-setup auto-grow for newly visible textarea
+            const textarea = document.getElementById('relato_algo_mas_detalle');
+            if (textarea) {
+                const resizeTextarea = () => {
+                    textarea.style.height = 'auto';
+                    textarea.style.height = textarea.scrollHeight + 'px';
+                };
+                textarea.addEventListener('input', resizeTextarea);
+                resizeTextarea();
+            }
+        } else {
+            container.style.display = 'none';
+        }
+    });
+}
+
+// Relato: Copiar denuncia completa con formato P/R (usando event delegation)
+document.addEventListener('click', function(e) {
+    if (e.target && e.target.id === 'relato_copy_btn') {
+        const formData = new FormData(form);
+        let output = '';
+        
+        const preguntas = {
+            'relato_descripcion': 'Descripción de los hechos',
+            'relato_donde': '¿Dónde ocurrieron los hechos?',
+            'relato_fecha_hora': '¿En qué fecha y hora ocurrieron los hechos?',
+            'relato_autor': '¿Quién fue el autor de los hechos?',
+            'relato_ubicacion_denunciado': '¿Dónde se ubica el denunciado?',
+            'relato_ha_denunciado': '¿Ha denunciado previamente a la persona que cometió el delito?',
+            'relato_detalles_previas': 'Detalles de denuncias previas',
+            'relato_parentesco': '¿Qué parentesco o relación tiene con la persona que va a denunciar?',
+            'relato_tiene_hijos': '¿Tiene hijos con la persona que va a denunciar?',
+            'relato_cantidad_hijos': 'Cantidad de hijos',
+            'relato_tipo_maltrato': '¿Qué tipo de maltrato ha recibido?',
+            'relato_maltrato_otro_tipo': 'Tipo de maltrato - Especifique',
+            'relato_maltrato_explicacion': 'Explicación del maltrato',
+            'relato_lesiones': 'Describa las lesiones causadas',
+            'relato_tipo_arma': '¿Con qué se produjo la agresión?',
+            'relato_arma_caracteristicas': 'Características del arma',
+            'relato_atencion_recibida': '¿Ha recibido atención médica, psicológica, social u otra?',
+            'relato_atencion_detalle': '¿Cuál, dónde y cuándo?',
+            'relato_incapacidad': '¿Cuenta con incapacidad o dictamen médico o psicológico?',
+            'relato_incapacidad_detalle': 'Detalles de incapacidad o dictamen',
+            'relato_maltrato_anterior': '¿Con anterioridad se ha presentado esta u otra clase de maltrato?',
+            'relato_maltrato_anterior_detalle': 'Detalles de maltrato anterior',
+            'relato_conductas_psicologicas': '¿Le ha intimidado, manipulado, humillado o aislado?',
+            'relato_conductas_psico_detalle': 'Detalles de conductas psicológicas',
+            'relato_manutension': '¿Quién asume la manutención económica de la víctima?',
+            'relato_discapacidad': '¿Tiene alguna condición de discapacidad?',
+            'relato_discapacidad_tipo': 'Tipo de discapacidad',
+            'relato_consume_sustancias': '¿El denunciado consume sustancias alucinógenas o alcohólicas?',
+            'relato_sustancia_tipo': 'Tipo de sustancia',
+            'relato_rehabilitacion': '¿Ha sido tratado en algún centro de rehabilitación?',
+            'relato_rehabilitacion_detalle': 'Centro de rehabilitación - Detalles',
+            'relato_enfermedad_mental': '¿El denunciado sufre de alguna enfermedad mental?',
+            'relato_enfermedad_tratamiento': 'Tratamiento por enfermedad mental',
+            'relato_hay_testigos': '¿Existen testigos de los hechos?',
+            'relato_testigos_info': 'Información de testigos',
+            'relato_tiene_evidencias': '¿Tiene algún elemento o evidencia?',
+            'relato_evidencias_info': 'Elementos o evidencias',
+            'relato_algo_mas': '¿Tiene algo más que desee agregar?',
+            'relato_algo_mas_detalle': 'Información adicional'
+        };
+        
+        for (let [key, value] of formData.entries()) {
+            if (preguntas[key] && value.trim()) {
+                output += `P/${preguntas[key]}\n`;
+                output += `R/${value}\n\n`;
+            }
+        }
+        
+        // También agregar campos de hijos dinámicos
+        let hijoNum = 1;
+        while (document.querySelector(`input[name="relato_hijo_${hijoNum}_nombre"]`)) {
+            const nombre = document.querySelector(`input[name="relato_hijo_${hijoNum}_nombre"]`).value;
+            const edad = document.querySelector(`input[name="relato_hijo_${hijoNum}_edad"]`).value;
+            if (nombre || edad) {
+                output += `P/Hijo(a) ${hijoNum} - Nombre\n`;
+                output += `R/${nombre || 'NO ESPECIFICADO'}\n\n`;
+                output += `P/Hijo(a) ${hijoNum} - Edad\n`;
+                output += `R/${edad || 'NO ESPECIFICADO'}\n\n`;
+            }
+            hijoNum++;
+        }
+        
+        // Mostrar el textarea con el contenido formateado
+        const outputArea = document.getElementById('relato_formatted_output');
+        outputArea.value = output;
+        outputArea.style.display = 'block';
+        
+        // Copiar al portapapeles
+        outputArea.select();
+        document.execCommand('copy');
+        
+        // Mostrar mensaje de confirmación
+        const messageDiv = document.getElementById('relato_copy_message');
+        messageDiv.textContent = '✓ Denuncia completa copiada al portapapeles';
+        messageDiv.style.display = 'block';
+        
+        setTimeout(() => {
+            messageDiv.style.display = 'none';
+        }, 3000);
+    }
+});
 
 // initialize first step
 showStep(0);

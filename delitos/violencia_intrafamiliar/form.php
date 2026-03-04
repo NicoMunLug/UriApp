@@ -619,7 +619,7 @@
             <h3>Actuaciones disponibles</h3>
             <div class="menu2-buttons">
                 <button type="button" class="menu2-action" data-action="actuacion_patru" disabled>Actuaciones Patrullero</button>
-                <button type="button" class="menu2-action" data-action="relato_victima" disabled>Relato Víctima</button>
+                <button type="button" class="menu2-action" data-action="relato_victima">Relato Víctima</button>
                 <button type="button" class="menu2-action" data-action="datos_indiciados">Datos Indiciados</button>
                 <button type="button" class="menu2-action" data-action="datos_victima">Datos Víctima</button>
                 <button type="button" class="menu2-action" data-action="datos_menores">Datos Menores de edad</button>
@@ -639,10 +639,230 @@
             <textarea name="actuacion_patru_detalle" rows="4"></textarea>
             <div style="margin-top:10px;"><button type="button" class="back-to-menu">Volver al menú</button></div>
         </div>
-        <div class="step" data-step="951" data-action="relato_victima">
-            <h4>Relato Víctima</h4>
-            <label>Relato</label>
-            <textarea name="relato_victima_detalle" rows="4"></textarea>
+        <!-- Pasos para relato_victima -->
+        <div class="step" data-step="1001" data-action="relato_victima">
+            <h3>Descripción de los Hechos</h3>
+            <label>Haga una descripción breve y concreta de los hechos que va a denunciar</label>
+            <textarea name="relato_descripcion" id="relato_descripcion" class="auto-grow" placeholder="Escriba aquí..."></textarea>
+            <div style="margin-top:10px;"><button type="button" class="back-to-menu">Volver al menú</button></div>
+        </div>
+        <div class="step" data-step="1002" data-action="relato_victima">
+            <label>¿Dónde ocurrieron los hechos?</label>
+            <input type="text" name="relato_donde">
+        </div>
+        <div class="step" data-step="1003" data-action="relato_victima">
+            <label>¿En qué fecha y hora ocurrieron los hechos?</label>
+            <input type="datetime-local" name="relato_fecha_hora">
+        </div>
+        <div class="step" data-step="1004" data-action="relato_victima">
+            <label>¿Quién fue el autor de los hechos? (nombre completo, identificación, alias, edad, profesión u ocupación)</label>
+            <textarea name="relato_autor" placeholder="Complete todos los datos disponibles"></textarea>
+        </div>
+        <div class="step" data-step="1005" data-action="relato_victima">
+            <label>¿Dónde se ubica el denunciado?</label>
+            <input type="text" name="relato_ubicacion_denunciado">
+        </div>
+        <div class="step" data-step="1006" data-action="relato_victima">
+            <label>¿Ha denunciado previamente a la persona que cometió el delito?</label>
+            <select name="relato_ha_denunciado" id="relato_ha_denunciado">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_denuncias_previas" style="display:none; margin-top:12px;">
+                <label>En caso afirmativo, explique cuándo y por qué delito (si puede aportar el NUNC)</label>
+                <textarea name="relato_detalles_previas" placeholder="Detalle las denuncias previas"></textarea>
+            </div>
+        </div>
+        <div class="step" data-step="1007" data-action="relato_victima">
+            <label>¿Qué parentesco o relación tiene con la persona que va a denunciar?</label>
+            <input type="text" name="relato_parentesco">
+        </div>
+        <div class="step" data-step="1008" data-action="relato_victima">
+            <label>¿Tiene hijos con la persona que va a denunciar?</label>
+            <select name="relato_tiene_hijos" id="relato_tiene_hijos">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_hijos_container" style="display:none; margin-top:12px;">
+                <label>¿Cuántos hijos?</label>
+                <input type="number" name="relato_cantidad_hijos" id="relato_cantidad_hijos" min="1">
+                <div id="relato_hijos_detalle"></div>
+            </div>
+        </div>
+        <div class="step" data-step="1009" data-action="relato_victima">
+            <label>¿Qué tipo de maltrato ha recibido? (Puede seleccionar varias opciones)</label>
+            <div style="margin-top:8px;">
+                <label><input type="checkbox" name="relato_tipo_maltrato" value="FÍSICO"> FÍSICO</label>
+                <label><input type="checkbox" name="relato_tipo_maltrato" value="VERBAL"> VERBAL</label>
+                <label><input type="checkbox" name="relato_tipo_maltrato" value="PSICOLÓGICO"> PSICOLÓGICO</label>
+                <label><input type="checkbox" name="relato_tipo_maltrato" value="ECONÓMICO"> ECONÓMICO</label>
+                <label><input type="checkbox" name="relato_tipo_maltrato" value="SEXUAL"> SEXUAL</label>
+                <label><input type="checkbox" name="relato_tipo_maltrato" value="OTRO"> OTRO</label>
+            </div>
+            <div id="relato_maltrato_otro" style="display:none; margin-top:12px;">
+                <label>Especifique el tipo de maltrato</label>
+                <input type="text" name="relato_maltrato_otro_tipo">
+            </div>
+            <label style="margin-top:12px;">Explique</label>
+            <textarea name="relato_maltrato_explicacion" placeholder="Proporcione detalles del maltrato"></textarea>
+        </div>
+        <div class="step" data-step="1010" data-action="relato_victima">
+            <label>Describa las lesiones causadas</label>
+            <textarea name="relato_lesiones"></textarea>
+        </div>
+        <div class="step" data-step="1011" data-action="relato_victima">
+            <label>¿Con qué se produjo la agresión?</label>
+            <select name="relato_tipo_arma" id="relato_tipo_arma">
+                <option value="">Seleccione</option>
+                <option value="sin_arma">SIN ARMA (Agresión física)</option>
+                <option value="arma_fuego">ARMA DE FUEGO</option>
+                <option value="arma_blanca">ARMA BLANCA</option>
+                <option value="contundente">CONTUNDENTE</option>
+                <option value="otra">OTRA</option>
+            </select>
+            <div id="relato_arma_detalles" style="display:none; margin-top:12px;">
+                <label>Indique características del arma</label>
+                <textarea name="relato_arma_caracteristicas" placeholder="Tipo, calibre, color, estado, etc."></textarea>
+            </div>
+        </div>
+        <div class="step" data-step="1012" data-action="relato_victima">
+            <label>¿Ha recibido atención médica, psicológica, social u otra?</label>
+            <select name="relato_atencion_recibida" id="relato_atencion_recibida">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_atencion_detalles" style="display:none; margin-top:12px;">
+                <label>¿Cuál, dónde y cuándo?</label>
+                <textarea name="relato_atencion_detalle" placeholder="Especifique el tipo, lugar y fecha de atención"></textarea>
+            </div>
+        </div>
+        <div class="step" data-step="1013" data-action="relato_victima">
+            <label>¿Cuenta con incapacidad o dictamen médico o psicológico por los hechos que está denunciando?</label>
+            <select name="relato_incapacidad" id="relato_incapacidad">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_incapacidad_detalles" style="display:none; margin-top:12px;">
+                <label>Detalle (fecha, entidad, días de incapacidad, diagnóstico)</label>
+                <textarea name="relato_incapacidad_detalle"></textarea>
+            </div>
+        </div>
+        <div class="step" data-step="1014" data-action="relato_victima">
+            <label>¿Con anterioridad se ha presentado esta u otra clase de maltrato?</label>
+            <select name="relato_maltrato_anterior" id="relato_maltrato_anterior">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_maltrato_anterior_detalles" style="display:none; margin-top:12px;">
+                <label>En caso afirmativo, ¿cuándo, dónde y qué sucedió?</label>
+                <textarea name="relato_maltrato_anterior_detalle"></textarea>
+            </div>
+        </div>
+        <div class="step" data-step="1015" data-action="relato_victima">
+            <label>¿El denunciado le ha intimidado, manipulado, humillado o aislado o realizado cualquier otra conducta que le haya implicado algún perjuicio en salud psicológica?</label>
+            <select name="relato_conductas_psicologicas">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_conductas_psico_detalles" style="display:none; margin-top:12px;">
+                <label>Explique las conductas presenciadas</label>
+                <textarea name="relato_conductas_psico_detalle"></textarea>
+            </div>
+        </div>
+        <div class="step" data-step="1016" data-action="relato_victima">
+            <label>¿Quién asume la manutención económica de la víctima?</label>
+            <input type="text" name="relato_manutension">
+        </div>
+        <div class="step" data-step="1017" data-action="relato_victima">
+            <label>¿La víctima tiene alguna condición de discapacidad?</label>
+            <select name="relato_discapacidad" id="relato_discapacidad">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_discapacidad_detalles" style="display:none; margin-top:12px;">
+                <label>¿Cuál es el tipo de discapacidad?</label>
+                <input type="text" name="relato_discapacidad_tipo">
+            </div>
+        </div>
+        <div class="step" data-step="1018" data-action="relato_victima">
+            <label>¿El denunciado consume sustancias alucinógenas o alcohólicas?</label>
+            <select name="relato_consume_sustancias" id="relato_consume_sustancias">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_sustancias_detalles" style="display:none; margin-top:12px;">
+                <label>¿Cuál, especifique?</label>
+                <input type="text" name="relato_sustancia_tipo">
+                <label style="margin-top:12px;">¿Ha sido tratado en algún centro de rehabilitación?</label>
+                <select name="relato_rehabilitacion">
+                    <option value="">Seleccione</option>
+                    <option value="no">NO</option>
+                    <option value="si">SÍ</option>
+                </select>
+                <div id="relato_rehabilitacion_detalles" style="display:none; margin-top:8px;">
+                    <label>Centro, ubicación y fechas</label>
+                    <textarea name="relato_rehabilitacion_detalle"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="step" data-step="1019" data-action="relato_victima">
+            <label>¿El denunciado sufre de alguna enfermedad mental?</label>
+            <select name="relato_enfermedad_mental" id="relato_enfermedad_mental">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_enfermedad_detalles" style="display:none; margin-top:12px;">
+                <label>¿Ha recibido algún tipo de tratamiento?</label>
+                <textarea name="relato_enfermedad_tratamiento"></textarea>
+            </div>
+        </div>
+        <div class="step" data-step="1020" data-action="relato_victima">
+            <label>¿Existen testigos de los hechos?</label>
+            <select name="relato_hay_testigos">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_testigos_detalles" style="display:none; margin-top:12px;">
+                <label>Nombre(s) y datos de contacto de los testigos</label>
+                <textarea name="relato_testigos_info"></textarea>
+            </div>
+        </div>
+        <div class="step" data-step="1021" data-action="relato_victima">
+            <label>¿Tiene algún elemento o evidencia que pueda servir para probar lo que describe en su denuncia?</label>
+            <select name="relato_tiene_evidencias">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_evidencias_detalles" style="display:none; margin-top:12px;">
+                <label>¿Cuáles son los elementos o evidencias?</label>
+                <textarea name="relato_evidencias_info"></textarea>
+            </div>
+        </div>
+        <div class="step" data-step="1022" data-action="relato_victima">
+            <label>¿Tiene algo más que desee agregar a la denuncia?</label>
+            <select name="relato_algo_mas" id="relato_algo_mas">
+                <option value="">Seleccione</option>
+                <option value="no">NO</option>
+                <option value="si">SÍ</option>
+            </select>
+            <div id="relato_final_container" style="display:none; margin-top:12px;">
+                <label>Agregue información adicional</label>
+                <textarea name="relato_algo_mas_detalle" id="relato_algo_mas_detalle" class="auto-grow" placeholder="Escriba aquí cualquier información adicional..."></textarea>
+            </div>
+                <button type="button" id="relato_copy_btn" style="background:#4CAF50; margin-top:12px;">COPIAR DENUNCIA COMPLETA</button>
+                <textarea id="relato_formatted_output" style="display:none; margin-top:12px; width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-family:monospace; font-size:0.9rem;" rows="10"></textarea>
+                <div id="relato_copy_message" style="display:none; color:green; margin-top:10px; font-weight:bold;"></div>
             <div style="margin-top:10px;"><button type="button" class="back-to-menu">Volver al menú</button></div>
         </div>
         <div class="step" data-step="952" data-action="datos_indiciados">

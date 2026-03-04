@@ -188,3 +188,11 @@ body.show-menu .step[data-step="999"] { display: block !important; }
     text-align: center;
     font-weight: bold;
 }
+
+/* textareas que crecen automáticamente */
+textarea.auto-grow {
+    min-height: 120px;
+    max-height: none;
+    overflow: hidden;
+    resize: none;
+}
